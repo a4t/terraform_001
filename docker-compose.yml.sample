@@ -1,0 +1,12 @@
+networks: {}
+
+version: '2.0'
+
+services:
+  terraform:
+    build: ./docker/terraform
+    volumes:
+      - ./terraform/:/terraform
+    environment:
+      - AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+      - AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
