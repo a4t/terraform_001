@@ -164,3 +164,36 @@ resource "aws_security_group_rule" "attach" {
 ## 最後に
 とは言っても既存のコードを書き換えるのは超労力いるので無理はしないでください。
 subnetとかを破壊するのは危険ですし、tfstateのjsonを目で追うのはつらいです。
+
+
+### 追記(2016-07-02 00:30)
+よく見たらコードの重複の部分をうまく説明できてないのでこんなmodule作るとコード綺麗に書けるよ、と捕捉
+
+```
+variable project_name {}
+variable rolename     {}
+variable vpc_id       {}
+
+resource "aws_security_group" "sg" {
+  vpc_id = "${var.vpc_id}"
+
+  name        = "${var.project_name}_${var.role_name}"
+  description = "${var.project_name} ${var.rolename}"
+
+  tags {
+    Name    = "${var.project_name}_${var.role_name}"
+    Project = "${var.project_name}"
+    Role    = "${var.rolename}"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+output "sgid" { value = "${aws_security_group.sg.id}"   }
+output "name" { value = "${aws_security_group.sg.name}" }
+```
